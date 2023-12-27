@@ -146,8 +146,9 @@ func callHandler(writer http.ResponseWriter, request *http.Request) {
 }
 
 func fetchResponse(message string) string {
+	lowerMessage := strings.ToLower(message)
 	for _, trigger := range triggers {
-		if strings.Contains(message, trigger.Key) {
+		if strings.Contains(lowerMessage, strings.ToLower(trigger.Key)) {
 			switch v := trigger.Values.(type) {
 			case string:
 				return v
