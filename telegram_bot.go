@@ -133,7 +133,7 @@ func callHandler(writer http.ResponseWriter, request *http.Request) {
 
 	p := bluemonday.UGCPolicy()
 	sanitizedMessageText := p.Sanitize(update.Message.Text)
-	responseText := fetchResponse(sanitizedMessageText)
+	responseText := computeResponse(sanitizedMessageText)
 
 	if responseText != "" {
 		var telegramResponseBody, telegramError = sendTextToChat(update.Message.Chat.Id, responseText)
@@ -145,7 +145,7 @@ func callHandler(writer http.ResponseWriter, request *http.Request) {
 	}
 }
 
-func fetchResponse(message string) string {
+func computeResponse(message string) string {
 	lowerMessage := strings.ToLower(message)
 	for _, trigger := range triggers {
 		if strings.Contains(lowerMessage, strings.ToLower(trigger.Key)) {
