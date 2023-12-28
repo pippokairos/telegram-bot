@@ -79,31 +79,30 @@ type Chat struct {
 	Type      string `json:"type"`
 }
 
-func init() {
-	initializeTriggers()
-}
-
-func initializeTriggers() {
+func initializeTriggers() error {
 	filename, _ := filepath.Abs("./triggers.yml")
 	yamlFile, err := ioutil.ReadFile(filename)
-
 	if err != nil {
-		panic(err)
+		return err
 	}
 
 	err = yaml.Unmarshal(yamlFile, &triggers)
-	if err != nil {
-		log.Fatal(err)
-	}
+	return err
 }
 
 func main() {
 	loadEnvVariables()
+
+	err := initializeTriggers()
+	if err != nil {
+		panic(err)
+	}
+
 	http.HandleFunc("/", callHandler)
 
 	port := 8080
 	fmt.Printf("Server is running on http://localhost:%d\n", port)
-	err := http.ListenAndServe(fmt.Sprintf(":%d", port), nil)
+	err = http.ListenAndServe(fmt.Sprintf(":%d", port), nil)
 	if err != nil {
 		fmt.Println("Error:", err)
 	}

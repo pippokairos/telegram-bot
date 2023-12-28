@@ -5,11 +5,16 @@ import (
 	"testing"
 )
 
-func TestComputeResponse(t *testing.T) {
+// Stub the triggers without reading from file
+func setMockTriggers() {
 	triggers = []Trigger{
 		{Key: "test", Values: "Response for test"},
 		{Key: "hello", Values: []interface{}{"Hello!", "Hi there"}},
 	}
+}
+
+func TestComputeResponse(t *testing.T) {
+	setMockTriggers()
 
 	testCases := []struct {
 		Name           string
