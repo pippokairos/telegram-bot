@@ -100,9 +100,8 @@ func main() {
 
 	http.HandleFunc("/", callHandler)
 
-	port := 8080
-	fmt.Printf("Server is running on http://localhost:%d\n", port)
-	err = http.ListenAndServe(fmt.Sprintf(":%d", port), nil)
+	fmt.Printf("Server is running on port %s\n", os.Getenv("PORT"))
+	err = http.ListenAndServe(fmt.Sprintf(":%s", os.Getenv("PORT")), nil)
 	if err != nil {
 		fmt.Println("Error:", err)
 	}
@@ -115,6 +114,9 @@ func loadEnvVariables() {
 	}
 	if os.Getenv("TOKEN") == "" {
 		log.Fatalf("Missing TOKEN environment variable")
+	}
+	if os.Getenv("PORT") == "" {
+		log.Fatalf("Missing PORT environment variable")
 	}
 }
 
