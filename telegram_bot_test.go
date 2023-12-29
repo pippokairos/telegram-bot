@@ -10,6 +10,7 @@ func setMockTriggers() {
 	triggers = []Trigger{
 		{Key: "test", Values: "Response for test"},
 		{Key: "hello", Values: []interface{}{"Hello!", "Hi there"}},
+		{Key: "say hi to", Values: []interface{}{"Hi __input__, how are you?"}},
 	}
 }
 
@@ -25,6 +26,8 @@ func TestComputeResponse(t *testing.T) {
 		{"Case insensitive match", "tEsT", []string{"Response for test"}},
 		{"Array random match", "Hello", []string{"Hello!", "Hi there"}},
 		{"No match", "This doesn't match", []string{""}},
+		{"Match with input", "Hey! Say hi to John Doe", []string{"Hi John Doe, how are you?"}},
+		{"Match with input trimmed", "Say hi to  John Doe   ", []string{"Hi John Doe, how are you?"}},
 	}
 
 	for _, testCase := range testCases {

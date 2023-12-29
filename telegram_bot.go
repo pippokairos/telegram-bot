@@ -144,19 +144,30 @@ func callHandler(writer http.ResponseWriter, request *http.Request) {
 	}
 }
 
-func computeResponse(message string) string {
-	lowerMessage := strings.ToLower(message)
+func computeResponse(inputMessage string) string {
+	lowerMessage := strings.ToLower(inputMessage)
 	for _, trigger := range triggers {
-		if strings.Contains(lowerMessage, strings.ToLower(trigger.Key)) {
-			switch v := trigger.Values.(type) {
+		lowerKey := strings.ToLower(trigger.Key)
+		index := strings.Index(lowerMessage, lowerKey)
+		if index > -1 { // The trigger matches
+			switch values := trigger.Values.(type) {
 			case string:
-				return v
+				return formatResponse(values, inputMessage, trigger.Key, index)
 			case []interface{}:
-				return getRandomFromArray(v)
+				return formatResponse(getRandomFromArray(values), inputMessage, trigger.Key, index)
 			}
 		}
 	}
 	return ""
+}
+
+func formatResponse(response string, inputMessage string, triggerKey string, index int) string {
+	if !strings.Contains(response, "__input__") {
+		return response
+	} else {
+		input := inputMessage[index+len(triggerKey):]
+		return strings.Replace(response, "__input__", strings.TrimSpace(input), -1)
+	}
 }
 
 func getRandomFromArray(array []interface{}) string {
